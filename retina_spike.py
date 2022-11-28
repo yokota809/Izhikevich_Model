@@ -81,23 +81,23 @@ for i in range(0, nt):
         blank[40:60,40:60] = np.ones((W1,H1),np.float32)
         a1=blank
         a=a1
-        g2=15.875
+        I=15.875
         # g2=7
     elif 100<=count<=150:
         blank[40:60,40:60] = np.ones((W1,H1),np.float32)
         a1=blank
         a=a1
-        g2=15.875
+        I=15.875
     elif 200<=count<=250:
         blank[40:60,40:60] = np.ones((W1,H1),np.float32)
         a1=blank
         a=a1
-        g2=15.875
+        I=15.875
     elif 300<=count<=350:
         blank[40:60,40:60] = np.ones((W1,H1),np.float32)
         a1=blank
         a=a1
-        g2=15.875
+        I=15.875
     # elif 900<=count<=1000:
     #     blank[40:60,40:60] = np.ones((W1,H1),np.float32)
     #     a1=blank
@@ -105,7 +105,7 @@ for i in range(0, nt):
     #     g2=-15.875
     else:
         a=blank
-        g2=-15.875
+        I=-15.875
         # g2=0
     a=blank
     #視細胞
@@ -145,13 +145,11 @@ for i in range(0, nt):
     # g2=0.0392*g1#i=10
     g1=0.0588*g1
     #i=15
-    # g2=32*g1
-    # if g2>=511.99:
-    #     g2=511.99
-    # g2=2.625
-    # g2=7
+    # I=32*g1
+    # I=2.625
+    # I=7
     # スパイク発火オイラー
-    v=v_old+(0.04*v_old*v_old+5*v_old+140-u_old+g2)*(dt)
+    v=v_old+(0.04*v_old*v_old+5*v_old+140-u_old+I)*(dt)
     # v=v_old+(0.04*v_old*v_old+5*v_old+140-u_old+g2)*(dt/Cm)
     u=u_old+a_spike*(b_spike*v_old-u_old)*dt
 
@@ -167,10 +165,9 @@ for i in range(0, nt):
     u_old=u
     v_arr[i] = v # 膜電位の値を保存
     u_arr[i] = u # 回復変数の値を保存
-    g_arr[i] = g2
+    g_arr[i] = I
     count +=1
     blank = np.zeros((W, H),np.float32)
-    g2=0
 t1 = np.arange(nt)*dt
 np.savetxt('a.csv',v_arr , delimiter=",",fmt='%12.6f')
 np.savetxt('b.csv',u_arr , delimiter=",",fmt='%12.6f')

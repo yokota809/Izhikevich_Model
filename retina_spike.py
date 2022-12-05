@@ -8,22 +8,13 @@ t1 = np.arange(nt)*dt
 v_arr = np.zeros(nt) # 膜電位を記録する配列
 u_arr = np.zeros(nt) # 回復変数を記録する配列
 count1=np.zeros(nt)
-C = 23 # 膜容量 (pF)
-# a_spike = 0.02 # 回復時定数の逆数 (1/ms)
-# b_spike = 0.2 # u の v に対する共鳴度合い (pA/mV)
-# c_spike=-65
-# d_spike = 8 # 発火で活性化される正味の外向き電流 (pA)
-# vrest = 50 # 静止膜電位 (mV)
-# vreset = 60 # リセット電位 (mV)
-# vthr = -43 # 閾値電位 (mV)
-# vpeak = 30 #　ピーク電位 (mV)
-
-a_spike = 0.043 # 回復時定数の逆数 (1/ms)
-b_spike = -0.4 # u の v に対する共鳴度合い (pA/mV)
-c_spike= -52
-d_spike = 56 # 発火で活性化される正味の外向き電流 (pA)
-k_spike = 1
-vreset = -51.8 # リセット電位 (mV)
+# パラメータ
+a_spike = 0.02 # 回復時定数の逆数 (1/ms)
+b_spike = 0.2 # u の v に対する共鳴度合い (pA/mV)
+c_spike=-60
+d_spike = 8 # 発火で活性化される正味の外向き電流 (pA)
+vrest = 50 # 静止膜電位 (mV)
+vreset = 60 # リセット電位 (mV)
 vthr = -43 # 閾値電位 (mV)
 vpeak = 30 #　ピーク電位 (mV)
 
@@ -63,24 +54,11 @@ for i in range(0, nt):
         # I=-1*i_input
         I=0
         # g2=0
-    # print(type(i_input))
-    # print(type(I))
     # スパイク発火オイラー
-    # v=v_old+(0.04*v_old*v_old+5*v_old+140-u_old+I)*(dt)
-    # u=u_old+a_spike*(b_spike*v_old-u_old)*dt
-    
-    v=v_old+(dt/C)*(k_spike*(v_old - vreset)*(v_old - vthr) - u_old +I)
-    u=u_old+dt*a_spike*(b_spike*(v_old-vreset)-u_old)
-    
-    # print(type(v))
-    # print(type(u))
-    # v=v_old+(dt/Cm)*((v_old+51.8)*(v_old+43)+(g2-u_old))
-    # u=u_old+dt*((-0.043*0.4)*(v_old+51.8)-u_old)
-
+    v=v_old+(0.04*v_old*v_old+5*v_old+140-u_old+I)*(dt)
+    u=u_old+a_spike*(b_spike*v_old-u_old)*dt
     if v>=vpeak:
-        # v=-52
         v=c_spike
-        # u=u-56
         u=u+d_spike
     v_old=v
     u_old=u

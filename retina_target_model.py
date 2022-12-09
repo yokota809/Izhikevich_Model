@@ -116,44 +116,55 @@ start = time.time()
 
 # スパイクの表示
 # fig, ax = plt.subplots()
-fig = plt.figure
+# fig = plt.figure
 frames = []
-fig_spike = plt.figure(figsize=(9,6))
-plt.get_current_fig_manager().window.wm_geometry("+400+400")
-plt.subplots_adjust(left=0.1, right=0.95, bottom=0.1, hspace=0.2)
-plt.subplots_adjust(wspace=0.2, hspace=0.4)
-fig_input = fig_spike.add_subplot(221, xlim=[0,nt], ylim=[0, 1.0], xlabel="x", ylabel="intensity[a.u.]")
-plt.title("input")
-fig_impulse = fig_spike.add_subplot(222, sharex=fig_input, ylim=[0, 1], xlabel="x")
-plt.title("impulse")
-fig_v = fig_spike.add_subplot(223, sharex=fig_input, ylim=[-90, 40], xlabel="x", ylabel="intensity[a.u.]")
-plt.title("v")
-fig_responce = fig_spike.add_subplot(224, sharex=fig_input, ylim=[0, 1], xlabel="x")
-plt.title("responce")
+# fig_spike = plt.figure(figsize=(9,6))
+# plt.get_current_fig_manager().window.wm_geometry("+400+400")
+# plt.subplots_adjust(left=0.1, right=0.95, bottom=0.1, hspace=0.2)
+# plt.subplots_adjust(wspace=0.2, hspace=0.4)
+# fig_input = fig_spike.add_subplot(221, xlim=[0,nt], ylim=[0, 1.0], xlabel="x", ylabel="intensity[a.u.]")
+# plt.title("input")
+# fig_impulse = fig_spike.add_subplot(222, sharex=fig_input, ylim=[0, 1], xlabel="x")
+# plt.title("impulse")
+# fig_v = fig_spike.add_subplot(223, sharex=fig_input, ylim=[-90, 40], xlabel="x", ylabel="intensity[a.u.]")
+# plt.title("v")
+# fig_responce = fig_spike.add_subplot(224, sharex=fig_input, ylim=[0, 1], xlabel="x")
+# plt.title("responce")
+
+# fig_input = fig_spike.add_subplot(221, ylim=[0, 1.0], xlabel="x", ylabel="intensity[a.u.]")
+# plt.title("input")
+# fig_impulse = fig_spike.add_subplot(222,ylim=[0, 1], xlabel="x")
+# plt.title("impulse")
+# fig_v = fig_spike.add_subplot(223,  ylim=[-90, 40], xlabel="x", ylabel="intensity[a.u.]")
+# plt.title("v")
+# fig_responce = fig_spike.add_subplot(224,  ylim=[0, 1], xlabel="x")
+# plt.title("responce")
 
 # 細胞応答
 fig = plt.figure(figsize=(9,6))
-plt.get_current_fig_manager().window.wm_geometry("+1000+400")
+plt.get_current_fig_manager().window.wm_geometry("+1000+300")
 plt.subplots_adjust(left=0.1, right=0.95, bottom=0.1, hspace=0.2)
 # 余白を設定
 plt.yticks(np.arange(-1.0,1.0, step=0.2))
 
 # 時間フィルタ
 plt.subplots_adjust(wspace=0.2, hspace=0.4)
-# plt.title("Temporal Filter")
-ax11 = fig.add_subplot(221, xlim=[0, nt], ylim=[-1.5, 1.5], xlabel="frame number", ylabel="intensity[a.u.]")
-# ax11 = fig.add_subplot(221, xlim=[0, 30], ylim=[-1.5, 1.5], xlabel="t(s)", ylabel="intensity[a.u.]")
-plt.title("PC")
-# plt.title("photoreceptor")
-ax12 = fig.add_subplot(222, sharex=ax11, ylim=[0, 0.05], xlabel="frame number", ylabel="intensity[a.u.]")
+# ax11 = fig.add_subplot(221, xlim=[0, nt/4], ylim=[-1.5, 1.5], xlabel="frame number", ylabel="intensity[a.u.]")
+# plt.title("PC")
+# ax12 = fig.add_subplot(222, xlim=[0, nt/4], ylim=[0, 0.05], xlabel="frame number", ylabel="intensity[a.u.]")
+# plt.title("HC")
+# ax13 = fig.add_subplot(223, xlabel="frame number", ylabel="intensity[a.u.]")
+# plt.title("BC")
+# ax14 = fig.add_subplot(224, xlim=[0, nt/4], ylim=[-0.05, 0.05], xlabel="frame number", ylabel="intensity[a.u.]")
+# plt.title("AC")
+
+ax11 = fig.add_subplot(221,  xlabel="frame number", ylabel="v")
+plt.title("V")
+ax12 = fig.add_subplot(222,  xlabel="frame number")
 plt.title("HC")
-# plt.title("horizontal")
-ax13 = fig.add_subplot(223, xlim=[0, nt], ylim=[-0.05, 0.05], xlabel="frame number", ylabel="intensity[a.u.]")
-# ax13 = fig.add_subplot(223, xlim=[0, 30], ylim=[-1.0, 1.0], xlabel="t(s)", ylabel="intensity[a.u.]")
+ax13 = fig.add_subplot(223, xlabel="frame number", ylabel="intensity[a.u.]")
 plt.title("BC")
-# plt.title("bipolar")
-ax14 = fig.add_subplot(224, sharex=ax11, ylim=[-0.05, 0.05], xlabel="frame number", ylabel="intensity[a.u.]")
-# ax14 = fig.add_subplot(224, sharex=ax11, ylim=[-1.0, 1.0], xlabel="t(s)", ylabel="intensity[a.u.]")
+ax14 = fig.add_subplot(224,  xlabel="frame number")
 plt.title("AC")
 
 # 眼球運動用の画像サイズ
@@ -182,11 +193,9 @@ elif keyboard.read_key() == "d":
     print("with eyemovement random impulse")
     Switch=4
     print(Switch)
-
-
         
 for i in range(0, nt):
-    # 矩形入力
+    # 眼球運動考慮なし状態の矩形入力
     if Switch==1:
         if i==0:
             blank[40:60,40:60] = np.ones((W1, H1),np.float32)
@@ -194,25 +203,36 @@ for i in range(0, nt):
         else:
             blank = np.zeros((W, H),np.float32)
             visual_input= blank
+    # 眼球運動考慮なし状態のランダム入力
     elif Switch==2:
         visual_input=np.random.uniform(0, 1, (H,W))
+    # 眼球運動考慮あり状態の矩形入力
     elif Switch==3:
         if i==0:
             blank1[60:80,60:80] = np.ones((W1, H1),np.float32)
             random_pattern_pre_em=image_slide(blank1)
             random_pattern_em=random_pattern_pre_em[10:110, 10:110]
             visual_input=random_pattern_em 
+        elif not i==0 and i%3==0:
+            blank1 = np.zeros((120, 120),np.float32)
+            random_pattern_em=blank1[10:110, 10:110]
+            visual_input=random_pattern_em 
         else:
             blank1 = np.zeros((120, 120),np.float32)
             random_pattern_pre_em=image_slide(blank1)
             random_pattern_em=random_pattern_pre_em[10:110, 10:110]
             visual_input=random_pattern_em 
-
+    # 眼球運動考慮あり状態のランダム入力
     elif Switch==4:
-        random_pattern_pre=np.random.uniform(0, 1, (height_em,width_em))    
-        random_pattern_pre_em=image_slide(random_pattern_pre)
-        random_pattern_em=random_pattern_pre_em[10:110, 10:110]
-        visual_input=random_pattern_em
+        if not i==0 and i%3==0:
+            random_pattern_pre=np.random.uniform(0, 1, (height_em,width_em))    
+            random_pattern_pre_em=image_slide(random_pattern_pre)
+            random_pattern_em=random_pattern_pre_em[10:110, 10:110]
+            visual_input=random_pattern_em 
+        else:
+            random_pattern_pre=np.random.uniform(0, 1, (height_em,width_em))    
+            random_pattern_em=random_pattern_pre[10:110, 10:110]
+            visual_input=random_pattern_em
   
     if i==0:
         visual_input_append=[visual_input]
@@ -281,11 +301,12 @@ for i in range(0, nt):
         spike_data[i*10+j][2]=v
         spike_data[i*10+j][3]=u
         spike_data[i*10+j][4]=RF
-        # fig_input.scatter(count, spike_data[i*10+j,0],color="b")
-        # fig_impulse.scatter(count, spike_data[i*10+j,1],color="b")
-        # fig_v.scatter(count, spike_data[i*10+j,2],color="b")
-        # fig_responce.scatter(count, spike_data[i*10+j,3],color="b")
-        # count1+=1
+        # fig_input.scatter(count1, spike_data[i*10+j,0],color="b")
+        # fig_impulse.scatter(count1, spike_data[i*10+j,1],color="b")
+        # fig_v.scatter(count1, spike_data[i*10+j,2],color="b")
+        # fig_responce.scatter(count1, spike_data[i*10+j,3],color="b")
+        ax11.scatter(count1, spike_data[i*10+j,2],color="b")
+        count1+=1
         # ani = animation.FuncAnimation(fig, frames, interval=200)
         # plt.show()
     # スパイク応答表示
@@ -307,7 +328,8 @@ for i in range(0, nt):
     s[i][2]=t_bon
     s[i][3]=t_ac
     s[i][4]=SpikingNeuron_input
-    ax11.scatter(count, t_p,color="b")
+    # ax11.scatter(count, t_p,color="b")
+    
     ax12.scatter(count, t_h,color="b")
     ax13.scatter(count, t_bon,color="b")
     ax14.scatter(count, t_ac,color="b")
